@@ -1,4 +1,4 @@
-from ricky.utils import forge_changes_file
+from ricky.utils import write_changes
 from clint import args
 
 
@@ -16,9 +16,4 @@ def forge_changes():
         raise Exception("No dist given with --dist=unstable")
 
     for what in args.files:
-        changes = forge_changes_file(what, dist)
-        path = '{source}_{version}_source.changes'.format(
-            source=changes['Source'],
-            version=changes['Version']
-        )
-        changes.dump(fd=open(path, 'wb'))
+        changes = write_changes(what, dist)

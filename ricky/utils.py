@@ -23,6 +23,15 @@ def file_info(path):
         yield (algo, name, hhash, fsize, path)
 
 
+def write_changes(fname, dist):
+    changes = forge_changes_file(fname, dist)
+    path = '{source}_{version}_source.changes'.format(
+        source=changes['Source'],
+        version=changes['Version']
+    )
+    changes.dump(fd=open(path, 'wb'))
+
+
 def forge_changes_file(fname, dist):
     dsc = deb822.Dsc(open(fname, 'r'))
 
