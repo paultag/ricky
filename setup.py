@@ -21,6 +21,7 @@ setup(
     entry_points={
         'console_scripts': [
             'ricky-forge-changes = ricky.cli:forge_changes',
+            'ricky-upload = ricky.cli:upload_package',
         ],
     }
 )
