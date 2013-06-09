@@ -52,7 +52,7 @@ def fetch_and_upload(dist, source, version):
 
     with tdir() as pth:
         with cd(pth):
-            out, err = run(['dget', DSC_URL])
+            out, err = run(['dget', '-u', DSC_URL])
             dsc = os.path.basename(DSC_URL)
             changes = write_changes(dsc, dist)
             out, err = run(['debsign', '-k%s' % (gpg), changes])
