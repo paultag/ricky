@@ -41,13 +41,17 @@ def fetch_and_upload(dist, source, version, **kwargs):
     gpg = config.get('config', 'signing-key')
     target = config.get('config', 'dput-target')
 
+    eversion = version
+    if ":" in eversion:
+        epoch, eversion = version.rsplit(":", 1)
+
     path = pool_path(source)
     DSC_URL = (
         "http://{mirror}/debian/pool/main/"
         "{path}/{source}_{version}.dsc".format(
             path=path,
             source=source,
-            version=version,
+            version=eversion,
             mirror=DEFAULT_MIRROR,
         ))
 
@@ -76,9 +80,15 @@ def file_info(path):
 
 def write_changes(fname, dist, **kwargs):
     changes = forge_changes_file(fname, dist, **kwargs)
+
+    version = changes['Version']
+    eversion = version
+    if ":" in eversion:
+        epoch, eversion = version.rsplit(":", 1)
+
     path = '{source}_{version}_source.changes'.format(
         source=changes['Source'],
-        version=changes['Version']
+        version=eversion,
     )
     changes.dump(fd=open(path, 'wb'))
     return path
