@@ -3,8 +3,12 @@
 from debian import deb822
 from ethel.utils import run_command, tdir, cd
 
+try:
+    import configparser
+except ImportError:
+    import ConfigParser as configparser
+
 import datetime as dt
-import configparser
 import email.utils
 import tarfile
 import hashlib
