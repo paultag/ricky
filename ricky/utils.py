@@ -38,8 +38,7 @@ def fetch_and_upload(dist, source, version):
     from ricky import DEFAULT_MIRROR
     config = configparser.ConfigParser()
     assert config.read(["/etc/ricky.ini"]) != []
-    info = config['config']
-    gpg = info['signing-key']
+    gpg = config.get('config', 'signing-key')
 
     path = pool_path(source)
     DSC_URL = (
