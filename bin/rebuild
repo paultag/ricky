@@ -1,0 +1,12 @@
+#!/bin/bash
+
+SOURCE=$1
+
+if [ "x${SOURCE}" = "x" ]; then
+    echo "Need a source package"
+    exit 1
+fi
+
+VERSION=$(apt-cache showsrc ${SOURCE} | grep '^Version:' | awk '{print $2}')
+echo "uploading ${SOURCE}/${VERSION} for unstable"
+ricky-upload --dist=unstable --source=${SOURCE} --version=${VERSION}
