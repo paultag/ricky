@@ -22,6 +22,14 @@ def pool_path(source):
     return pfix
 
 
+def run(cmd):
+    out, err, ret = run_command(cmd)
+    if ret != 0:
+        print(out, err)
+        raise Exception("Stupid")
+    return out, err
+
+
 def fetch_and_upload(dist, source, version):
     from ricky import DEFAULT_MIRROR
     config = configparser.ConfigParser()
@@ -41,19 +49,11 @@ def fetch_and_upload(dist, source, version):
 
     with tdir() as pth:
         with cd(pth):
-            out, err, ret = run_command(['dget', DSC_URL])
-            print(out, err)
+            out, err = run(['dget', DSC_URL])
             dsc = os.path.basename(DSC_URL)
             changes = write_changes(dsc, dist)
-            out, err, ret = run_command([
-                'debsign', '-k%s' % (gpg),
-                changes
-            ])
-            print(out, err)
-            out, err, ret = run_command([
-                'dput', 'debuild', changes
-            ])
-            print(out, err)
+            out, err = run(['debsign', '-k%s' % (gpg), changes])
+            out, err = run(['dput', 'debuild', changes])
 
 
 def file_info(path):
