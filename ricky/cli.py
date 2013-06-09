@@ -24,6 +24,7 @@ def upload_package():
         "dist": "unstable",
         "source": None,
         "version": None,
+        "group": None
     }
 
     for flag in args.flags:
@@ -38,7 +39,12 @@ def upload_package():
     for k, v in opts.items():
         if v is None:
             raise KeyError(
-                "give me --dist=unstable --source=fluxbox --version=1.3.5-1"
+                "give me --dist=unstable --source=fluxbox --version=1.3.5-1 --group=test"
             )
+
+    if opts['group']:
+        opts['X-Lucy-Group'] = opts.pop('group')
+    else:
+        opts.pop('group')
 
     fetch_and_upload(**opts)

@@ -34,11 +34,12 @@ def run(cmd):
     return out, err
 
 
-def fetch_and_upload(dist, source, version):
+def fetch_and_upload(dist, source, version, **kwargs):
     from ricky import DEFAULT_MIRROR
     config = configparser.ConfigParser()
     assert config.read(["/etc/ricky.ini"]) != []
     gpg = config.get('config', 'signing-key')
+    target = config.get('config', 'dput-target')
 
     path = pool_path(source)
     DSC_URL = (
@@ -54,9 +55,9 @@ def fetch_and_upload(dist, source, version):
         with cd(pth):
             out, err = run(['dget', '-u', DSC_URL])
             dsc = os.path.basename(DSC_URL)
-            changes = write_changes(dsc, dist)
+            changes = write_changes(dsc, dist, **kwargs)
             out, err = run(['debsign', '-k%s' % (gpg), changes])
-            out, err = run(['dput', 'debuild', changes])
+            out, err = run(['dput', target, changes])
 
 
 def file_info(path):
@@ -73,8 +74,8 @@ def file_info(path):
         yield (algo, name, hhash, fsize, path)
 
 
-def write_changes(fname, dist):
-    changes = forge_changes_file(fname, dist)
+def write_changes(fname, dist, **kwargs):
+    changes = forge_changes_file(fname, dist, **kwargs)
     path = '{source}_{version}_source.changes'.format(
         source=changes['Source'],
         version=changes['Version']
@@ -83,7 +84,7 @@ def write_changes(fname, dist):
     return path
 
 
-def forge_changes_file(fname, dist):
+def forge_changes_file(fname, dist, **kwargs):
     dsc = deb822.Dsc(open(fname, 'r'))
 
     changes = deb822.Changes()
@@ -133,5 +134,9 @@ def forge_changes_file(fname, dist):
     changes['Description'] = """This feature is not implemented.
  This is a pretty damn hard to deal with right now. I might write this
  later."""
+
+
+    for k, v in kwargs.items():
+        changes[k] = v
 
     return changes

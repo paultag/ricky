@@ -1,5 +1,6 @@
 #!/bin/bash
 
+GROUP=$2
 SOURCE=$1
 
 if [ "x${SOURCE}" = "x" ]; then
@@ -7,6 +8,12 @@ if [ "x${SOURCE}" = "x" ]; then
     exit 1
 fi
 
+if [ "x${GROUP}" = "x" ]; then
+    echo "Need a group ID"
+    exit 1
+fi
+
 VERSION=$(apt-cache showsrc ${SOURCE} | grep '^Version:' | awk '{print $2}')
 echo "uploading ${SOURCE}/${VERSION} for unstable"
-ricky-upload --dist=unstable --source=${SOURCE} --version=${VERSION}
+ricky-upload --dist=unstable --source=${SOURCE} --version=${VERSION} \
+    --groupp=${GROUP}
