@@ -45,15 +45,23 @@ def fetch_and_upload(dist, source, version, **kwargs):
     if ":" in eversion:
         epoch, eversion = version.rsplit(":", 1)
 
-    path = pool_path(source)
-    DSC_URL = (
-        "http://{mirror}/debian/pool/main/"
-        "{path}/{source}_{version}.dsc".format(
-            path=path,
-            source=source,
-            version=eversion,
-            mirror=DEFAULT_MIRROR,
-        ))
+    if "incoming.debian.org" == DEFAULT_MIRROR:
+        DSC_URL = (
+            "http://{mirror}/{source}_{version}.dsc".format(
+                source=source,
+                version=eversion,
+                mirror=DEFAULT_MIRROR,
+            ))
+    else:
+        path = pool_path(source)
+        DSC_URL = (
+            "http://{mirror}/debian/pool/main/"
+            "{path}/{source}_{version}.dsc".format(
+                path=path,
+                source=source,
+                version=eversion,
+                mirror=DEFAULT_MIRROR,
+            ))
 
     with tdir() as pth:
         with cd(pth):
