@@ -16,4 +16,4 @@ fi
 VERSION=$(apt-cache showsrc ${SOURCE} | grep '^Version:' | awk '{print $2}')
 echo "uploading ${SOURCE}/${VERSION} for unstable"
 ricky-upload --dist=unstable --source=${SOURCE} --version=${VERSION} \
-    --groupp=${GROUP}
+    --group=${GROUP}
