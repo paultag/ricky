@@ -30,7 +30,7 @@ def run(cmd):
     out, err, ret = run_command(cmd)
     if ret != 0:
         print(out, err)
-        raise Exception("Stupid")
+        raise Exception("Command failed")
     return out, err
 
 
