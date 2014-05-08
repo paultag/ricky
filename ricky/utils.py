@@ -1,7 +1,12 @@
 # This isn't perfect, but it'll do.
 
 from debian import deb822
-from ethel.utils import run_command, tdir, cd
+import tempfile
+import subprocess
+import shutil
+from contextlib import contextmanager
+import os
+import shlex
 
 try:
     import configparser
@@ -14,6 +19,45 @@ import tarfile
 import hashlib
 import time
 import os
+
+
+@contextmanager
+def tdir():
+    fp = tempfile.mkdtemp()
+    try:
+        yield fp
+    finally:
+        shutil.rmtree(fp)
+
+
+@contextmanager
+def cd(where):
+    ncwd = os.getcwd()
+    try:
+        yield os.chdir(where)
+    finally:
+        os.chdir(ncwd)
+
+
+def run_command(command, stdin=None):
+    if not isinstance(command, list):
+        command = shlex.split(command)
+    try:
+        pipe = subprocess.Popen(command, shell=False,
+                                stdin=subprocess.PIPE,
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE)
+    except OSError:
+        return (None, None, -1)
+
+    kwargs = {}
+    if stdin:
+        kwargs['input'] = stdin.read()
+
+    (output, stderr) = pipe.communicate(**kwargs)
+    output, stderr = (c.decode('utf-8',
+                               errors='ignore') for c in (output, stderr))
+    return (output, stderr, pipe.returncode)
 
 
 def pool_path(source):
@@ -137,21 +181,20 @@ def forge_changes_file(fname, dist, **kwargs):
     changes['Changed-By'] = 'Archive Rebuilder <paultag@debian.org>'
     changes['Architecture'] = 'source'
     changes['Binary'] = 'not implemented either'
+    changes['Description'] = """This feature is not implemented.
+ This is a pretty damn hard to deal with right now. I might write this
+ later."""
     changes['Changes'] = """
  {source} ({version}) {dist}; urgency={urgency}
  .
    * This is a fake ChangeLog entry used by ricky to force a rebuild
-     on debuild.me.
-    """.format(
+     on debuild.me.""".format(
         source=changes['Source'],
         version=changes['Version'],
         urgency=changes['Urgency'],
         dist=dist,
     )
 
-    changes['Description'] = """This feature is not implemented.
- This is a pretty damn hard to deal with right now. I might write this
- later."""
 
 
     for k, v in kwargs.items():
