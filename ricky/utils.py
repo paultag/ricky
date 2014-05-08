@@ -80,8 +80,10 @@ def run(cmd):
 
 def fetch_and_upload(dist, source, version, **kwargs):
     from ricky import DEFAULT_MIRROR
+    confFile = "/etc/ricky.ini"
     config = configparser.ConfigParser()
-    assert config.read(["/etc/ricky.ini"]) != []
+    if not os.path.isfile(confFile):
+        raise Exception("Could not find " + confFile)
     gpg = config.get('config', 'signing-key')
     target = config.get('config', 'dput-target')
 
