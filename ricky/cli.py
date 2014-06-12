@@ -43,7 +43,7 @@ def upload_package():
             )
 
     if opts['group']:
-        opts['X-Lucy-Group'] = opts.pop('group')
+        opts['X-Debile-Group'] = opts.pop('group')
     else:
         opts.pop('group')
 
