@@ -84,6 +84,7 @@ def fetch_and_upload(dist, source, version, **kwargs):
     config = configparser.ConfigParser()
     if not os.path.isfile(confFile):
         raise Exception("Could not find " + confFile)
+    config.read([confFile])
     gpg = config.get('config', 'signing-key')
     target = config.get('config', 'dput-target')
 
