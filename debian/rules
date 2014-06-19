@@ -1,0 +1,13 @@
+#!/usr/bin/make -f
+
+PY2_PACKAGE_NAME = python-ricky
+PYVERS  = $(shell pyversions -r)
+
+%:
+	dh $@ --with python2
+
+
+
+override_dh_auto_clean:
+	dh_auto_clean
+	rm -rvf ./*.egg-info
