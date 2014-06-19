@@ -19,7 +19,7 @@ setup(
     author="Paul Tagliamonte",
     author_email="tag@pault.ag",
     long_description=long_description,
-    description='You got some \'splainin to do!',
+    description='tool for rebuilding packages using the Debile infrastructure',
     license="Expat",
     url="http://deb.io/",
     platforms=['any'],
