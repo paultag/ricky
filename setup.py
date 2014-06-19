@@ -4,6 +4,10 @@ from setuptools import setup
 
 long_description = ""
 
+with open('requirements.txt') as f:
+    install_requires = [l for l in f.read().splitlines()
+                        if not l.startswith('#')]
+
 setup(
     name=__appname__,
     version=__version__,
@@ -11,10 +15,11 @@ setup(
     packages=[
         'ricky',
     ],
+    install_requires=install_requires,
     author="Paul Tagliamonte",
     author_email="tag@pault.ag",
     long_description=long_description,
-    description='You got some \'splainin to do!',
+    description='tool for rebuilding packages using the Debile infrastructure',
     license="Expat",
     url="http://deb.io/",
     platforms=['any'],
