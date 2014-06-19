@@ -1,0 +1,21 @@
+Source: ricky
+Maintainer: Debian Python Modules Team <python-modules-team@lists.alioth.debian.org>
+Uploaders: Clément Schreiner <clement@mux.me>
+Section: python
+Priority: optional
+Build-Depends: python-setuptools (>= 0.6b3), python-all (>= 2.6.6-3), debhelper (>= 9)
+Standards-Version: 3.9.5
+Homepage: https://github.com/paultag/ricky
+#Vcs-Svn:
+#Vcs-Browser: 
+
+
+Package: python-ricky
+Architecture: all
+Depends: ${misc:Depends}, ${python:Depends}
+Description: Ricky is able to create a .dsc url to your friendly local
+ mirror, and fetch that exact version of the package. Ricky can then
+ also use the .dsc to forge a package_version_source.changes file, and
+ sign it with an autobuild key and upload it to the debuild.me
+ instance.
+
