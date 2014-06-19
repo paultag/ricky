@@ -6,8 +6,8 @@ Priority: optional
 Build-Depends: python-setuptools (>= 0.6b3), python-all (>= 2.6.6-3), debhelper (>= 9)
 Standards-Version: 3.9.5
 Homepage: https://github.com/paultag/ricky
-#Vcs-Svn:
-#Vcs-Browser: 
+Vcs-Git: git@github.com:paultag/ricky.git
+Vcs-Browser: https://github.com/paultag/ricky
 
 
 Package: python-ricky
