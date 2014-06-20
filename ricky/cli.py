@@ -1,6 +1,7 @@
 from ricky.utils import write_changes, fetch_and_upload
-from clint import args
+from clint import Args
 
+args = Args()
 
 def forge_changes():
     dist = None
