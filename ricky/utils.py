@@ -74,7 +74,7 @@ def run(cmd):
     out, err, ret = run_command(cmd)
     if ret != 0:
         print(out, err)
-        raise Exception("Command " + cmd + " failed")
+        raise Exception("Command " + ' '.join(cmd) + " failed")
     return out, err
 
 
