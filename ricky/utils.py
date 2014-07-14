@@ -81,23 +81,24 @@ def run(cmd):
 def fetch_and_upload(dist, source, version, **kwargs):
     from ricky import DEFAULT_MIRROR
     confFile = "/etc/ricky.ini"
-    config = configparser.ConfigParser()
+    config = configparser.ConfigParser({'mirror': DEFAULT_MIRROR})
     if not os.path.isfile(confFile):
         raise Exception("Could not find " + confFile)
     config.read([confFile])
     gpg = config.get('config', 'signing-key')
     target = config.get('config', 'dput-target')
+    mirror = config.get('config', 'mirror')
 
     eversion = version
     if ":" in eversion:
         epoch, eversion = version.rsplit(":", 1)
 
-    if "incoming.debian.org" == DEFAULT_MIRROR:
+    if "incoming.debian.org" == mirror:
         DSC_URL = (
             "http://{mirror}/{source}_{version}.dsc".format(
                 source=source,
                 version=eversion,
-                mirror=DEFAULT_MIRROR,
+                mirror=mirror,
             ))
     else:
         path = pool_path(source)
@@ -107,7 +108,7 @@ def fetch_and_upload(dist, source, version, **kwargs):
                 path=path,
                 source=source,
                 version=eversion,
-                mirror=DEFAULT_MIRROR,
+                mirror=mirror,
             ))
 
     with tdir() as pth:
