@@ -113,11 +113,14 @@ def fetch_and_upload(dist, source, version, **kwargs):
 
     with tdir() as pth:
         with cd(pth):
-            out, err = run(['dget', '-u', DSC_URL])
-            dsc = os.path.basename(DSC_URL)
-            changes = write_changes(dsc, dist, **kwargs)
-            out, err = run(['debsign', '-k%s' % (gpg), changes])
-            out, err = run(['dput', target, changes])
+            out, err, ret = run_command(['dget', '-u', DSC_URL])
+            if ret == 0:
+                dsc = os.path.basename(DSC_URL)
+                changes = write_changes(dsc, dist, **kwargs)
+                out, err = run(['debsign', '-k%s' % gpg, changes])
+                out, err = run(['dput', target, changes])
+            else:
+                print('Could not download %s' % DSC_URL)
 
 
 def file_info(path):
