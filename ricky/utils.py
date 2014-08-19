@@ -21,6 +21,15 @@ import time
 import os
 
 
+class MissingChangesFieldException(Exception):
+    """ Some field is missing in the DSC file """
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return 'Missing {0} field.'.format(self.value)
+
+
 @contextmanager
 def tdir():
     fp = tempfile.mkdtemp()
@@ -116,9 +125,14 @@ def fetch_and_upload(dist, source, version, **kwargs):
             out, err, ret = run_command(['dget', '-u', DSC_URL])
             if ret == 0:
                 dsc = os.path.basename(DSC_URL)
-                changes = write_changes(dsc, dist, **kwargs)
-                out, err = run(['debsign', '-k%s' % gpg, changes])
-                out, err = run(['dput', target, changes])
+                try:
+                    changes = write_changes(dsc, dist, **kwargs)
+                except MissingChangesFieldException as e:
+                    print('Could not issue rebuild. Missing Changes'
+                          'Field: {0}'.format(e.value))
+                else:
+                    out, err = run(['debsign', '-k%s' % gpg, changes])
+                    out, err = run(['dput', target, changes])
             else:
                 print('Could not download %s' % DSC_URL)
 
@@ -166,6 +180,9 @@ def forge_changes_file(fname, dist, **kwargs):
         'Source', 'Version', 'Maintainer',
         'Checksums-Sha1', 'Checksums-Sha256', 'Files'
     ]:
+        if not dsc.has_key(key):
+            raise MissingChangesFieldException(key)
+
         changes[key] = dsc[key]
 
     for algo, key, h, s, f in file_info(fname):
